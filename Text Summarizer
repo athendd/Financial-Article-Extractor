@@ -11,6 +11,7 @@ import tensorflow_hub as hub
 import tensorflow as tf
 import tensorflow_hub as hub
 from sklearn.metrics.pairwise import cosine_similarity
+from sentence_transformers import SentenceTransformer
 import networkx as nx
 
 #cleaning sentences must be done first and foremost
@@ -19,15 +20,29 @@ def split_into_tokens(text):
   sentences = nltk.sent_tokenize(text)
   return sentences
 
-#could use FullTokenizer instead
+"""
+model = SentenceTransformer('bert-base-nli-mean-tokens')  # Example model, choose based on your needs
+word_embeddings = model.encode(sentences)
+"""
 
-#sentences = sent_tokenize(text)
-#tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
-#tokenized_sentences = [tokenizer(sentence)["input_ids"] for sentence in sentences]
-#input_ids = tokenizer.convert_tokens_to_ids(tokenized_sentences)
-#input_ids = tf.expand_dims(input_ids, 0)
-#outputs = bert_layer(input_ids)
-#embeddings = outputs["sequence_output"][0]
+"""
+tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+model = BertModel.from_pretrained('bert-base-uncased')
+
+embeddings = len(sentences)
+
+for cleaned_sentence in sentences:
+  # tokenizes the inputted text and return tensors from pytorch
+  bert_inputs = tokenizer(cleaned_sentences, return_tensors = 'pt')
+
+  # obtain the embedding
+  with torch.no_grad():
+    outputs = model(**bert_inputs)
+  last_hidden_state = outputs.last_hidden_state
+  sentence_embedding = torch.mean(last_hidden_states, dim=1).numpy()
+
+similarities = cosine_similarity(query_embedding, np.vstack(embeddings))
+"""
 
 df = "link to financial articles on stocks"
 
@@ -40,8 +55,6 @@ for line in f:
   coefs = np.asarray(values[1:], dtype='float32')
   word_embeddings[word] = coefs
 f.close()
-
-#clean text using the clean text method which will get you cleaned_sentences
 
 sentence_vectors = []
 for cleaned_sentence in cleaned_sentences:
