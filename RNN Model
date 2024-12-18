@@ -1,3 +1,4 @@
+https://medium.com/@muhammadluay45/sentiment-analysis-using-recurrent-neural-network-rnn-long-short-term-memory-lstm-and-38d6e670173f, https://www.analyticsvidhya.com/blog/2019/01/fundamentals-deep-learning-recurrent-neural-networks-scratch-python/, https://towardsdatascience.com/a-beginners-guide-on-sentiment-analysis-with-rnn-9e100627c02e
 from tensorflow.keras.layers import SimpleRNN, LSTM, GRU, Bidirectional, Dense, Embedding
 from tensorflow.keras.datasets import imdb
 from tensorflow.keras.models import Sequential
@@ -78,11 +79,23 @@ def clean_text(text):
             long_words.append(i)
     return (" ".join(long_words).strip())
 
-tokenizer = Tokenizer()
-tokenizer.fit_on_texts()
+# look into changing num_words and oov_token
+tokenizer = keras.preprocessing.text.Tokenizer(num_words=10000, oov_token='<OOV>')
+train_sentences, train_labels = zip(*[(sent.numpy().decode('utf8'), label.numpy()) for sent, label in train_data])
+tokenizer.fit_on_texts(train_sentences)
+train_sequences = tokenizer.texts_to_sequences(train_sentences)
 
-train_sequences = tokenizer.texts_to_sequences()
-test_sequences = tokenizer.texts_to_sequences()
+# look into changing maxlen, padding, and truncating
+train_padded = keras.preprocessing.sequence.pad_sequences(train_sequences, maxlen=100, padding='post', truncating='post')
+
+test_sentences, test_labels = zip(*[(sent.numpy().decode('utf8'), label.numpy()) for sent, label in test_data])
+test_sequences = tokenizer.texts_to_sequences(test_sentences)
+
+# look into changing maxlen, padding, and truncating
+test_padded = keras.preprocessing.sequence.pad_sequences(test_sequences, maxlen=100, padding='post', truncating='post')
+
+train_labels = np.array(train_labels)
+test_labels = np.array(test_labels)
 
 
 
