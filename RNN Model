@@ -14,13 +14,13 @@ tokenizer.fit_on_texts(train_sentences)
 train_sequences = tokenizer.texts_to_sequences(train_sentences)
 
 # ensures that all sequences have the same size
-train_padded = keras.preprocessing.sequence.pad_sequences(train_sequences, maxlen=100, padding='post', truncating='post')
+train_padded = keras.preprocessing.sequence.pad_sequences(train_sequences, maxlen=100, padding='pre', truncating='pre')
 
 test_sentences, test_labels = zip(*[(sent.numpy().decode('utf8'), label.numpy()) for sent, label in test_data])
 test_sequences = tokenizer.texts_to_sequences(test_sentences)
 
 # look into changing maxlen, padding, and truncating
-test_padded = keras.preprocessing.sequence.pad_sequences(test_sequences, maxlen=100, padding='post', truncating='post')
+test_padded = keras.preprocessing.sequence.pad_sequences(test_sequences, maxlen=100, padding='pre', truncating='pre')
 
 train_labels = np.array(train_labels)
 test_labels = np.array(test_labels)
