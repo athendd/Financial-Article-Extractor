@@ -14,7 +14,7 @@ train_sentences, train_labels = zip(*[(sent.numpy().decode('utf8'), label.numpy(
 tokenizer.fit_on_texts(train_sentences)
 train_sequences = tokenizer.texts_to_sequences(train_sentences)
 
-# look into changing maxlen, padding, and truncating
+# ensures that all sequences have the same size
 train_padded = keras.preprocessing.sequence.pad_sequences(train_sequences, maxlen=100, padding='post', truncating='post')
 
 test_sentences, test_labels = zip(*[(sent.numpy().decode('utf8'), label.numpy()) for sent, label in test_data])
