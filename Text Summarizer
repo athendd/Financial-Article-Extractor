@@ -1,4 +1,4 @@
-# https://www.analyticsvidhya.com/blog/2018/11/introduction-text-summarization-textrank-python/, https://plainenglish.io/blog/how-to-generate-word-embedding-using-bert, https://medium.com/data-science-in-your-pocket/text-summarization-using-textrank-in-nlp-4bce52c5b390
+# https://towardsdatascience.com/text-embeddings-comprehensive-guide-afd97fce8fb5, https://plainenglish.io/blog/how-to-generate-word-embedding-using-bert, https://medium.com/data-science-in-your-pocket/text-summarization-using-textrank-in-nlp-4bce52c5b390
 import ntlk
 import numpy as np
 import pandas as pd
@@ -14,36 +14,52 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
 import networkx as nx
 
-#cleaning sentences must be done first and foremost
+# cleaning sentences must be done first and foremost
+
+# transformer model such as bert for embedding
 
 def split_into_tokens(text):
   sentences = nltk.sent_tokenize(text)
   return sentences
 
 """
-# Bert embedding
+# Bert transformer model
 
-model = SentenceTransformer('bert-base-nli-mean-tokens')  # Example model, choose based on your needs
-word_embeddings = model.encode(sentences)
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')  # also change if needed
+model = BertModel.from_pretrained("bert-base-uncased") # change model if needed
+
+# returns tensors
+inputs = tokenizer(sentences, padding=True, truncation=True, return_tensors="pt")
+
+# pass inputs through the model
+with torch.no_grad():
+    outputs = model(**inputs)
+
+token_embeddings = outputs.last_hidden_state
+
+# which tokens should be used and which ones shouldn't
+attention_mask = inputs["attention_mask"]
+expanded_mask = attention_mask.unsqueeze(-1).expand(token_embeddings.size())
+sum_embeddings = torch.sum(token_embeddings * expanded_mask, 1)
+sum_mask = torch.clamp(attention_mask.sum(1), min=1e-9)
+mean_embeddings = sum_embeddings / sum_mask.unsqueeze(-1)
+
+Or use pretrained bert
+
+model = SentenceTransformer('finbert')
+sentence_embeddings = model.encode(sentences)
+
 """
 
 """
-tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
-model = BertModel.from_pretrained('bert-base-uncased')
-
-embeddings = len(sentences)
-
-for cleaned_sentence in sentences:
-  # tokenizes the inputted text and return tensors from pytorch
-  bert_inputs = tokenizer(cleaned_sentences, return_tensors = 'pt')
-
-  # obtain the embedding
-  with torch.no_grad():
-    outputs = model(**bert_inputs)
-  last_hidden_state = outputs.last_hidden_state
-  sentence_embedding = torch.mean(last_hidden_states, dim=1).numpy()
-
-similarities = cosine_similarity(query_embedding, np.vstack(embeddings))
+# Pre Trained Financial Embedding
+sentence_embeddings = (
+    nlp.BGEEmbeddings.pretrained(
+        "finance_bge_base_embeddings", "en", "finance/models"
+    )
+    .setInputCols("document")
+    .setOutputCol("sentence_embeddings")
+)
 """
 
 df = "link to financial articles on stocks"
@@ -118,7 +134,6 @@ for i in d.reverse():
     print(text[i])
 """
 
-
 word_embeddings = {}
 
 # embeds each sentence into a vector
@@ -154,4 +169,4 @@ scores = nx.pagerank(nx_graph)
 #get the top N sentences based on their ranking
 n = 5
 for i in range(n):
-print(ranked_sentences[i][1])
+  print(ranked_sentences[i][1])
