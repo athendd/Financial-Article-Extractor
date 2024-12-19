@@ -5,7 +5,6 @@ from tensorflow.keras.models import Sequential
 import numpy as np
 from keras.layers import Bidirectional, LSTM
 
-
 dataset = None
 
 # look into changing num_words and oov_token
@@ -36,7 +35,7 @@ model = keras.models.Sequential([
     keras.layers.Embedding(10000, 32), #10000 vocab size of text
     #keras.layers.Dropout(0.5), turns off 50% of neurons to avoid overfitting
     keras.layers.SimpleRNN(32, kernel_regularizer=keras.regularizers.l2(0.001)) L2 add penalty to loss function to encourage model to have smaller weights to prevent overfitting
-    keras.layers.Dense(1, activation='sigmoid') #output between 0 and 1
+    keras.layers.Dense(3, activation='softmax') #output between 0 and 1
 ])
 
 early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=2) training is stopped if validation doesn't improved for a specified number of epochs(in this case 3)
