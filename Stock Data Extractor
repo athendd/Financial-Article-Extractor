@@ -1,0 +1,11 @@
+import BeautifulSoup
+
+# list of all stocks that will be extracted
+stocks_to_extract = [
+'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'TSLA', 'FB', 'ADBE', 'CRM', 'PYPL', 
+'JPM', 'BAC','WFC','GS', 'MS', 'V', 'MA', 'SPGI', 'CME', 'BLK',
+'JNJ', 'PFE','MRK','UNH','ABBV', 'AMGN','GILD', 'BIIB', 'CVS', 'CI',
+'XOM', 'CVX','SLB', 'EOG', 'COP', 'VLO', 'MPC', 'NE', 'DUK','SO', 
+'WMT','COST', 'MCD','PG', 'KO', 'PEP', 'NKE', 'DIS', 'HD', 'LOW'
+]
+
