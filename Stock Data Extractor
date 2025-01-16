@@ -1,11 +1,27 @@
-import BeautifulSoup
+from datetime import datetime, timedelta
+import pandas as pd
+import yfinance as yf
+import os
 
-# list of all stocks that will be extracted
+
 stocks_to_extract = [
-'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'TSLA', 'FB', 'ADBE', 'CRM', 'PYPL', 
+'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'TSLA', 'ORCL', 'ADBE', 'CRM', 'PYPL', 
 'JPM', 'BAC','WFC','GS', 'MS', 'V', 'MA', 'SPGI', 'CME', 'BLK',
 'JNJ', 'PFE','MRK','UNH','ABBV', 'AMGN','GILD', 'BIIB', 'CVS', 'CI',
 'XOM', 'CVX','SLB', 'EOG', 'COP', 'VLO', 'MPC', 'NE', 'DUK','SO', 
 'WMT','COST', 'MCD','PG', 'KO', 'PEP', 'NKE', 'DIS', 'HD', 'LOW'
 ]
 
+end_date = datetime.now()
+start_date = end_date - timedelta(days=365 * 5)
+
+file_path = "C:/Users/thynnea/Downloads/Extracted Stocks.csv"
+
+# Download historical data for Apple (AAPL)
+for stock in stocks_to_extract:
+    data = yf.download(stock, start=start_date, end=end_date)
+    
+    if not data.empty:
+        data.to_csv(file_path, mode='a', index = False)
+    else:
+        print(stock)
