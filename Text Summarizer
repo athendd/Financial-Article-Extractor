@@ -1,4 +1,4 @@
-# https://towardsdatascience.com/text-embeddings-comprehensive-guide-afd97fce8fb5, https://plainenglish.io/blog/how-to-generate-word-embedding-using-bert, https://medium.com/data-science-in-your-pocket/text-summarization-using-textrank-in-nlp-4bce52c5b390
+https://medium.com/data-science-in-your-pocket/text-summarization-using-textrank-in-nlp-4bce52c5b390
 import ntlk
 import numpy as np
 import pandas as pd
@@ -22,50 +22,8 @@ def split_into_tokens(text):
   sentences = nltk.sent_tokenize(text)
   return sentences
 
-"""
-# Bert transformer model
-
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')  # also change if needed
-model = BertModel.from_pretrained("bert-base-uncased") # change model if needed
-
-# returns tensors
-inputs = tokenizer(sentences, padding=True, truncation=True, return_tensors="pt")
-
-# pass inputs through the model
-with torch.no_grad():
-    outputs = model(**inputs)
-
-token_embeddings = outputs.last_hidden_state
-
-# which tokens should be used and which ones shouldn't
-attention_mask = inputs["attention_mask"]
-expanded_mask = attention_mask.unsqueeze(-1).expand(token_embeddings.size())
-sum_embeddings = torch.sum(token_embeddings * expanded_mask, 1)
-sum_mask = torch.clamp(attention_mask.sum(1), min=1e-9)
-mean_embeddings = sum_embeddings / sum_mask.unsqueeze(-1)
-
-Or use pretrained bert
-
-model = SentenceTransformer('finbert')
-sentence_embeddings = model.encode(sentences)
-
-"""
-
-"""
-# Pre Trained Financial Embedding
-sentence_embeddings = (
-    nlp.BGEEmbeddings.pretrained(
-        "finance_bge_base_embeddings", "en", "finance/models"
-    )
-    .setInputCols("document")
-    .setOutputCol("sentence_embeddings")
-)
-"""
-
 df = "link to financial articles on stocks"
 
-
-"""
 # Math behind TextRank
 
 min_threhold = 1e-4
