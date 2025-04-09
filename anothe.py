@@ -1,4 +1,5 @@
 import requests
+import TextSummarizer
 from bs4 import BeautifulSoup
 from datetime import datetime
 import re
@@ -7,7 +8,6 @@ from collections import OrderedDict
 import spacy
 import mysql.connector
 from mysql.connector import Error
-from transformers import pipeline
 import os 
 import numpy as np
 
@@ -65,13 +65,11 @@ def find_time(soup):
         return None
     
 def find_body(soup):
-    summarizer = pipeline("summarization")
     article_body = soup.find('div', class_ = 'caas-body')
     if article_body:
-        summary = summarizer(article_body.text.strip(), max_length=200, min_length=50, do_sample=False)
-        quick_summary = summary[0]['summary_text']
-        if quick_summary:
-            return article_body.text.strip(), quick_summary.strip()
+        summary = TextSummarizer.perform_textrank(article_body.text.strip())
+        if summary:
+            return article_body.text.strip(), summary
         else:
             return article_body.text.strip(), None
     else:
